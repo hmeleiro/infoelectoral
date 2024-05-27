@@ -1,4 +1,5 @@
 library(dplyr)
+options(HTTPUserAgent="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
 
 set.seed(120)
 x <- fechas_elecciones %>%
@@ -8,7 +9,6 @@ x <- fechas_elecciones %>%
 
 data <- candidatos("senado", x$anno, x$mes, nivel = "municipio") %>%
   filter(codigo_provincia != "99")
-
 
 test_that("n_provincias function", {
   n_provincias <- unique(data$codigo_provincia) %>% length()

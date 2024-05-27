@@ -1,7 +1,7 @@
 Package: infoelectoral
 Type: Package
 Title: Download Spanish Election Results
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: 
     person("Héctor", "Meleiro", 
     email = "hmeleiros@gmail.com", 

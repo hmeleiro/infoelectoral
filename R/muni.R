@@ -43,11 +43,11 @@ municipios <- function(tipo_eleccion, anno, mes, distritos = FALSE) {
   temp <- tempfile(tmpdir = tempd, fileext = ".zip")
   download.file(url, temp, mode = "wb")
 
-  unzip(temp, overwrite = T, exdir = tempd)
+  unzip(temp, overwrite = TRUE, exdir = tempd)
 
   ### Construyo las rutas a los ficheros DAT necesarios
   codigo_eleccion <- paste0(substr(anno, nchar(anno)-1, nchar(anno)), mes)
-  todos <- list.files(tempd, recursive = T)
+  todos <- list.files(tempd, recursive = TRUE)
   x <- todos[grepl(paste0("06", tipo, codigo_eleccion, ".DAT"), todos)]
   xbasicos <- todos[grepl(paste0("05", tipo, codigo_eleccion, ".DAT"), todos)]
   xcandidaturas <- todos[grepl(paste0("03", tipo, codigo_eleccion, ".DAT"), todos)]
@@ -73,8 +73,8 @@ municipios <- function(tipo_eleccion, anno, mes, distritos = FALSE) {
   }
 
   ### Limpio el directorio temporal (IMPORTANTE: Si no lo hace, puede haber problemas al descargar más de una elección)
-  borrar <-  list.files(tempd, full.names = T, recursive = T)
-  try(file.remove(borrar), silent = T)
+  borrar <-  list.files(tempd, full.names = TRUE, recursive = TRUE)
+  try(file.remove(borrar), silent = TRUE)
 
   ### Junto los datos de los tres ficheros
   df <- full_join(dfbasicos, dfmunicipios,

@@ -16,6 +16,7 @@
 #' @importFrom dplyr select
 #' @importFrom dplyr arrange
 #' @importFrom dplyr %>%
+#' @importFrom dplyr full_join
 #'
 #' @keywords internal
 senado_municipios <- function(anno, mes) {
@@ -26,14 +27,14 @@ senado_municipios <- function(anno, mes) {
   url <- paste0(urlbase, tipo, anno, mes, "_MUNI", ".zip")
 
   ### Descargo el fichero zip en un directorio temporal y lo descomprimo
-  tempd <- tempdir(check = F)
+  tempd <- tempdir(check = FALSE)
   temp <- tempfile(tmpdir = tempd, fileext = ".zip")
   download.file(url, temp, mode = "wb")
-  unzip(temp, overwrite = T, exdir = tempd)
+  unzip(temp, overwrite = TRUE, exdir = tempd)
 
   ### Construyo las rutas a los ficheros DAT necesarios
   codigo_eleccion <- paste0(substr(anno, nchar(anno)-1, nchar(anno)), mes)
-  todos <- list.files(tempd, recursive = T)
+  todos <- list.files(tempd, recursive = TRUE)
   x <- todos[todos == paste0("04", tipo, codigo_eleccion, ".DAT")]
   xmunicipios <- todos[todos == paste0("06", tipo, codigo_eleccion, ".DAT")]
   xbasicos <- todos[todos == paste0("05", tipo, codigo_eleccion, ".DAT")]
@@ -50,20 +51,20 @@ senado_municipios <- function(anno, mes) {
 
 
   ### Limpio el directorio temporal (IMPORTANTE: Si no lo hace, puede haber problemas al descargar más de una elección)
-  borrar <-  list.files(tempd, full.names = T, recursive = T)
-  try(file.remove(borrar), silent = T)
+  borrar <-  list.files(tempd, full.names = TRUE, recursive = TRUE)
+  try(file.remove(borrar), silent = TRUE)
 
   ### Junto los datos de los tres ficheros
-  df <- merge(dfbasicos, dfmunicipios, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_municipio", "codigo_distrito"), all = T)
-  df <- merge(df, dfcandidatos, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_distrito_electoral", "codigo_senador"), all = T)
-  df <- merge(df, dfcandidaturas, by = c("tipo_eleccion", "anno", "mes", "codigo_partido"), all = T)
+  df <- full_join(dfbasicos, dfmunicipios, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_municipio", "codigo_distrito"))
+  df <- full_join(df, dfcandidatos, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_distrito_electoral", "codigo_senador"))
+  df <- full_join(df, dfcandidaturas, by = c("tipo_eleccion", "anno", "mes", "codigo_partido"))
 
   ### Limpieza: Quito los espacios en blanco a los lados de estas variables
   df$siglas <- str_trim(df$siglas)
   df$denominacion <- str_trim(df$denominacion)
 
   codigos_municipios <- infoelectoral::codigos_municipios
-  df <- merge(df, codigos_municipios, by = c("codigo_provincia", "codigo_municipio"), all = T) %>%
+  df <- full_join(df, codigos_municipios, by = c("codigo_provincia", "codigo_municipio")) %>%
     mutate_if(is.character, str_trim) %>%
     mutate(denominacion = str_remove_all("denominacion", '"')) %>%
     select(
