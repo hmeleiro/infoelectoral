@@ -43,7 +43,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">infoelectoral</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -113,8 +113,7 @@
 <p>Install <a href="https://ropenspain.github.io/infoelectoral/" class="external-link">infoelectoral</a> and
 load the packages needed.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># devtools::install_github("ropenspain/elecciones") # &lt;--- Instala la librería elecciones</span></span>
-<span></span>
+<code class="sourceCode R"><span><span class="co"># install_packages("infoelectoral")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rOpenSpain/infoelectoral" class="external-link">infoelectoral</a></span><span class="op">)</span></span>
 <span><span class="co"># Cargo el resto de librerías</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
@@ -134,91 +133,116 @@ Congress of December 2015.</p>
 <p>Import the geometry shapes for the municipalities using <a href="https://github.com/rOpenSpain/mapSpain" class="external-link">mapSpain</a>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ropenspain.github.io/mapSpain/" class="external-link">mapSpain</a></span><span class="op">)</span></span>
-<span><span class="va">shp</span> <span class="op">&lt;-</span> <span class="va">esp_munic.sf</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">LAU_CODE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_munic.html" class="external-link">esp_get_munic</a></span><span class="op">(</span>year <span class="op">=</span> <span class="st">"2016"</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">LAU_CODE</span><span class="op">)</span></span>
+<span><span class="va">shp_ccaa</span> <span class="op">&lt;-</span> <span class="fu">mapSpain</span><span class="fu">::</span><span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="recode-the-party-names">Recode the party names<a class="anchor" aria-label="anchor" href="#recode-the-party-names"></a>
 </h2>
 <p>Since most parties have different names throughout the country, you
-need to recode them to group their results. You can use the column
-<code>code.nacional</code> included in the resulting
+will need to recode them to group their results. You can use the column
+<code>codigo_partido_nacional</code> included in the resulting
 <code>data.frame</code> that indicates the grouping party code at the
 national level. After that you’ll have to create the complete
 municipality code (<code>LAU_CODE</code>) for the merge with the
 <code>sf</code> object and transform the data from long to wide
 format.</p>
+<p>First, let’s group the parties by
+<code>codigo_partido_nacional</code> and <code>siglas</code> and sum the
+votes to see which party codes correspond to the main parties.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">siglas_r</span> <span class="op">&lt;-</span> <span class="va">results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">codigo_partido_nacional</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span>siglas_r <span class="op">=</span> <span class="va">siglas</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">siglas_r</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PP"</span>, <span class="st">"PSE-EE (PSO"</span>, <span class="st">"PSOE"</span>, <span class="st">"PODEMOS-AHA"</span>,</span>
-<span>                         <span class="st">"PODEMOS-COM"</span>, <span class="st">"PODEMOS-En"</span>, <span class="st">"C´s"</span>, <span class="st">"EN COMÚ"</span>,</span>
-<span>                         <span class="st">"IU-UPeC"</span>, <span class="st">"IULV-CA,UPe"</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>siglas_r <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
-<span>    <span class="va">siglas_r</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PODEMOS-COM"</span>, <span class="st">"PODEMOS-En"</span>, <span class="st">"EN COMÚ"</span>, <span class="st">"PODEMOS-AHA"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Podemos"</span>,</span>
-<span>    <span class="va">siglas_r</span> <span class="op">==</span> <span class="st">"PSE-EE (PSO"</span> <span class="op">~</span> <span class="st">"PSOE"</span>,</span>
-<span>    <span class="va">siglas_r</span> <span class="op">==</span> <span class="st">"C´s"</span> <span class="op">~</span> <span class="st">"Cs"</span>,</span>
-<span>    <span class="va">siglas_r</span> <span class="op">==</span> <span class="st">"IULV-CA,UPe"</span> <span class="op">~</span> <span class="st">"IU"</span>,</span>
-<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="va">siglas_r</span></span>
-<span>    </span>
-<span>  <span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">results</span>, <span class="va">siglas_r</span>, by <span class="op">=</span> <span class="st">"codigo_partido_nacional"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results</span> <span class="op">&lt;-</span> <span class="va">results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">codigo_partido_nacional</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    siglas_r <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">siglas</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>,</span>
+<span>    votos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">votos</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="op">-</span><span class="va">votos</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## <span style="color: #949494;"># A tibble: 56 × 3</span></span></span>
+<span><span class="co">##    codigo_partido_nacional siglas_r      votos</span></span>
+<span><span class="co">##    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>                   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 1</span> 903316                  PP          7<span style="text-decoration: underline;">216</span>024</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 2</span> 903484                  PSOE        5<span style="text-decoration: underline;">530</span>428</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 3</span> 901079                  C´s         3<span style="text-decoration: underline;">500</span>063</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 4</span> 903736                  PODEMOS     3<span style="text-decoration: underline;">182</span>256</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 5</span> 905033                  EN COMÚ      <span style="text-decoration: underline;">927</span>053</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 6</span> 904850                  IULV-CA,UPe  <span style="text-decoration: underline;">923</span>377</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 7</span> 905008                  PODEMOS-COM  <span style="text-decoration: underline;">671</span>077</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 8</span> 905063                  ERC-CATSÍ    <span style="text-decoration: underline;">599</span>375</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;"> 9</span> 904991                  DL           <span style="text-decoration: underline;">565</span>742</span></span>
+<span><span class="co">## <span style="color: #BCBCBC;">10</span> 905041                  PODEMOS-En   <span style="text-decoration: underline;">408</span>417</span></span>
+<span><span class="co">## <span style="color: #949494;"># ℹ 46 more rows</span></span></span></code></pre>
+<p>Then, we’ll have to recode the party names and calculate the
+percentage of votes.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">results</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">results</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
+<span>    siglas_r <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span></span>
+<span>      <span class="va">codigo_partido_nacional</span> <span class="op">==</span> <span class="st">"903316"</span> <span class="op">~</span> <span class="st">"PP"</span>,</span>
+<span>      <span class="va">codigo_partido_nacional</span> <span class="op">==</span> <span class="st">"903484"</span> <span class="op">~</span> <span class="st">"PSOE"</span>,</span>
+<span>      <span class="va">codigo_partido_nacional</span> <span class="op">==</span> <span class="st">"901079"</span> <span class="op">~</span> <span class="st">"Cs"</span>,</span>
+<span>      <span class="va">codigo_partido_nacional</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"903736"</span>, <span class="st">"905033"</span>, <span class="st">"905008"</span>, <span class="st">"905041"</span><span class="op">)</span> <span class="op">~</span> <span class="st">"Podemos"</span>,</span>
+<span>      <span class="va">codigo_partido_nacional</span> <span class="op">==</span> <span class="st">"904850"</span> <span class="op">~</span> <span class="st">"IU"</span></span>
+<span>    <span class="op">)</span>,</span>
 <span>    <span class="co"># Construyo la columna que identifica al municipio (LAU_CODE)</span></span>
 <span>    LAU_CODE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="va">codigo_provincia</span>, <span class="va">codigo_municipio</span><span class="op">)</span>,</span>
 <span>    <span class="co"># Calculo el % sobre censo</span></span>
-<span>    pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">votos</span> <span class="op">/</span> <span class="va">censo_ine</span> <span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">2</span><span class="op">)</span></span>
-<span>    <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>    pct <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="op">(</span><span class="va">votos</span> <span class="op">/</span> <span class="va">censo_ine</span><span class="op">)</span> <span class="op">*</span> <span class="fl">100</span>, <span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">siglas_r</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="co"># Selecciono las columnas necesarias</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">codigo_ccaa</span>, <span class="va">LAU_CODE</span>, <span class="va">siglas_r</span>, <span class="va">censo_ine</span>, <span class="va">votos_candidaturas</span>, <span class="va">pct</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
-<span>  <span class="co"># Transformo los datos de formato long a wide</span></span>
-<span>  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html" class="external-link">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="st">"siglas_r"</span>, values_from <span class="op">=</span> <span class="st">"pct"</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">codigo_ccaa</span>, <span class="va">LAU_CODE</span>, <span class="va">siglas_r</span>, <span class="va">censo_ine</span>, <span class="va">votos_candidaturas</span>, <span class="va">pct</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="merge-the-data-and-the-geometries">Merge the data and the geometries<a class="anchor" aria-label="anchor" href="#merge-the-data-and-the-geometries"></a>
+<h2 id="join-the-voting-data-to-the-geometries">Join the voting data to the geometries<a class="anchor" aria-label="anchor" href="#join-the-voting-data-to-the-geometries"></a>
 </h2>
 <p>With the <code>LAU_CODE</code> column merge the data with the
-geomtries of the municipalities. Since the Canary Island are too far
-away you are going to need to get them closer to the Iberian
-Peninsula.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/merge.html" class="external-link">merge</a></span><span class="op">(</span><span class="va">shp</span>, <span class="va">results</span>, by <span class="op">=</span> <span class="st">"LAU_CODE"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># Acercamos las Canarias a la peninsula</span></span>
-<span><span class="va">shp</span><span class="op">$</span><span class="va">geometry</span><span class="op">[</span><span class="va">shp</span><span class="op">$</span><span class="va">codigo_ccaa</span> <span class="op">==</span> <span class="st">"05"</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">shp</span><span class="op">$</span><span class="va">geometry</span><span class="op">[</span><span class="va">shp</span><span class="op">$</span><span class="va">codigo_ccaa</span> <span class="op">==</span> <span class="st">"05"</span><span class="op">]</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+geomtries of the municipalities.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">shp</span>, <span class="va">results</span>, by <span class="op">=</span> <span class="st">"LAU_CODE"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualize">Visualize<a class="anchor" aria-label="anchor" href="#visualize"></a>
 </h2>
-<p>At last, we may use <a href="https://github.com/mtennekes/tmap" class="external-link">tmap</a> or even <a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot</a> to visualize the maps.
-In this case we use the formar because of it’s easier to create
-facets.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">colores5</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#ededed"</span>, <span class="st">"#0cb2ff"</span><span class="op">)</span>, <span class="co"># PP</span></span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#ededed"</span>, <span class="st">"#E01021"</span><span class="op">)</span>, <span class="co"># PSOE</span></span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#ededed"</span>, <span class="st">"#612d62"</span><span class="op">)</span>, <span class="co"># Podemos</span></span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#ededed"</span>, <span class="st">"#E85B2D"</span><span class="op">)</span>, <span class="co"># Cs</span></span>
-<span>                 <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#ededed"</span>, <span class="st">"#E01021"</span><span class="op">)</span><span class="op">)</span> <span class="co"># IU</span></span>
+<p>At last, we may use <a href="https://ggplot2.tidyverse.org/" class="external-link">ggplot2</a> to visualize the data.
+In this case we use <code><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">purrr::map</a></code> to create a list of plots
+each of them with their own color gradient scale and
+<code>patchwork</code> to show them together.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">breaks</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">10</span>,<span class="fl">30</span>,<span class="fl">50</span>,<span class="fl">70</span>,<span class="fl">100</span><span class="op">)</span></span>
+<span><span class="va">colores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0cb2ff"</span>, <span class="st">"#E01021"</span>, <span class="st">"#612d62"</span>, <span class="st">"#E85B2D"</span>, <span class="st">"#E01021"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">colores</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PP"</span>, <span class="st">"PSOE"</span>, <span class="st">"Podemos"</span>, <span class="st">"Cs"</span>, <span class="st">"IU"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/" class="external-link">tmap</a></span><span class="op">)</span></span>
-<span><span class="va">mapa</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html" class="external-link">tm_shape</a></span><span class="op">(</span><span class="va">shp</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html" class="external-link">tm_polygons</a></span><span class="op">(</span>col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"PP"</span>, <span class="st">"PSOE"</span>, <span class="st">"Podemos"</span>, <span class="st">"Cs"</span>, <span class="st">"IU"</span><span class="op">)</span>, style <span class="op">=</span> <span class="st">"fixed"</span>, </span>
-<span>              palette <span class="op">=</span> <span class="va">colores5</span>, breaks <span class="op">=</span> <span class="va">breaks</span>,</span>
-<span>              title <span class="op">=</span> <span class="st">"% sobre censo"</span>, </span>
-<span>              border.alpha <span class="op">=</span> <span class="fl">0</span>, lwd <span class="op">=</span> <span class="fl">0</span>, legend.show <span class="op">=</span> <span class="cn">T</span>, legend.outside <span class="op">=</span> <span class="cn">T</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_layout</a></span><span class="op">(</span>between.margin <span class="op">=</span> <span class="fl">5</span>, frame <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>            title <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Partido Popular"</span>, <span class="st">"PSOE"</span>, <span class="st">"Podemos"</span>, <span class="st">"Ciudadanos"</span>, <span class="st">"Izquierda Unida"</span><span class="op">)</span>,</span>
-<span>            title.fontface <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html" class="external-link">tm_legend</a></span><span class="op">(</span>legend.text.size <span class="op">=</span> <span class="fl">1</span>, </span>
-<span>            legend.title.size <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_facets.html" class="external-link">tm_facets</a></span><span class="op">(</span>sync <span class="op">=</span> <span class="cn">TRUE</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="va">mapa</span></span></code></pre></div>
-<p><img src="municipios_files/figure-html/unnamed-chunk-6-1.png" width="768" style="display: block; margin: auto;"></p>
+<span><span class="co"># Creo una lista de plots</span></span>
+<span><span class="va">maps</span> <span class="op">&lt;-</span></span>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">colores</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">p</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">shp</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">siglas_r</span> <span class="op">==</span> <span class="va">p</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
+<span>        <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">pct</span>, color <span class="op">=</span> <span class="va">pct</span><span class="op">)</span>,</span>
+<span>        linewidth <span class="op">=</span> <span class="fl">0</span>, show.legend <span class="op">=</span> <span class="cn">F</span></span>
+<span>      <span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
+<span>        data <span class="op">=</span> <span class="va">shp_ccaa</span>, fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span>,</span>
+<span>        linewidth <span class="op">=</span> <span class="fl">0.01</span></span>
+<span>      <span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">siglas_r</span><span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span></span>
+<span>        low <span class="op">=</span> <span class="st">"white"</span>, high <span class="op">=</span> <span class="va">colores</span><span class="op">[</span><span class="va">p</span><span class="op">]</span>,</span>
+<span>        na.value <span class="op">=</span> <span class="st">"grey90"</span>, aesthetics <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fill"</span>, <span class="st">"color"</span><span class="op">)</span></span>
+<span>      <span class="op">)</span> <span class="op">+</span></span>
+<span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_void</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  <span class="op">}</span><span class="op">)</span></span>
+<span></span>
+<span></span>
+<span><span class="co"># Uso patchworks para mostrar los plots</span></span>
+<span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html" class="external-link">wrap_plots</a></span><span class="op">(</span><span class="va">maps</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<p><img src="municipios_files/figure-html/unnamed-chunk-7-1.png" width="768" style="display: block; margin: auto;"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

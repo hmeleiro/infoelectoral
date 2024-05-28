@@ -43,7 +43,7 @@
     
     <a class="navbar-brand me-2" href="index.html">infoelectoral</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -98,18 +98,24 @@
 </h1></div>
 <!-- badges: start -->
 
-<p><a href="https://ropenspain.github.io/infoelectoral/" class="external-link">infoelectoral</a> is a R library that helps retrieve and analize official electoral results for Spain from the <a href="https://infoelectoral.interior.gob.es/opencms/es/inicio/" class="external-link">Ministry of the Interior</a>. It allows you to download the results of general, european and municipal elections of any year at the polling station and municipality level.</p>
+<!-- badges: end -->
+<p><a href="https://ropenspain.github.io/infoelectoral/" class="external-link">infoelectoral</a> is a R library that helps retrieve official electoral results for Spain from the <a href="https://infoelectoral.interior.gob.es/opencms/es/inicio/" class="external-link">Ministry of the Interior</a>. It allows you to download the results of general, european and municipal elections of any year at the polling station and municipality level.</p>
 </div>
 <div class="section level1">
-<h1 id="how-to-install">How to install?<a class="anchor" aria-label="anchor" href="#how-to-install"></a>
+<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h1>
-<pre><code><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ropenspain/infoelectoral"</span><span class="op">)</span></span></code></pre>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># To install the latest stable version from CRAN:</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"infoelectoral"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># To install the development version:</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ropenspain/infoelectoral"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level1">
-<h1 id="how-to-use-it">How to use it<a class="anchor" aria-label="anchor" href="#how-to-use-it"></a>
+<h1 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h1>
-<p><a href="https://ropenspain.github.io/infoelectoral/" class="external-link">infoelectoral</a> has three functions:</p>
-<ol style="list-style-type: decimal">
+<p><a href="https://ropenspain.github.io/infoelectoral/" class="external-link">infoelectoral</a> has four functions:</p>
+<ul>
 <li>
 <code><a href="reference/mesas.html">mesas()</a></code> downloads the electoral results data of the selected election at the polling station level.</li>
 <li>
@@ -118,13 +124,24 @@
 <code><a href="reference/provincias.html">provincias()</a></code> downloads the electoral results data of the selected election at the constituency level.</li>
 <li>
 <code><a href="reference/candidatos.html">candidatos()</a></code> downloads the candidates data of the selected elections.</li>
-</ol>
-<div class="section level2">
-<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
-</h2>
-<pre><code><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rOpenSpain/infoelectoral" class="external-link">infoelectoral</a></span><span class="op">)</span></span>
-<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/municipios.html">municipios</a></span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="fl">1982</span>, mes <span class="op">=</span> <span class="st">"10"</span><span class="op">)</span></span></code></pre>
+</ul>
+<p>The package also includes some <a href="https://ropenspain.github.io/infoelectoral/reference/index.html#datasets" class="external-link">datasets</a> with the official names of the territorial units and the election dates.</p>
 </div>
+<div class="section level1">
+<h1 id="basic-usage">Basic usage<a class="anchor" aria-label="anchor" href="#basic-usage"></a>
+</h1>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rOpenSpain/infoelectoral" class="external-link">infoelectoral</a></span><span class="op">)</span></span>
+<span><span class="va">df</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/municipios.html">municipios</a></span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="fl">1982</span>, mes <span class="op">=</span> <span class="st">"10"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level1">
+<h1 id="learn-more">Learn more<a class="anchor" aria-label="anchor" href="#learn-more"></a>
+</h1>
+<p>For a a extended example of how all functions work please check the vignettes:</p>
+<ul>
+<li><a href="https://ropenspain.github.io/infoelectoral/articles/infoelectoral.html" class="external-link">Get started</a></li>
+<li><a href="https://ropenspain.github.io/infoelectoral/articles/municipios.html" class="external-link">Using infoelectoral to make electoral maps</a></li>
+</ul>
 </div>
 
   </main><aside class="col-md-3"><div class="links">
