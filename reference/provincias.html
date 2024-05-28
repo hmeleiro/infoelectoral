@@ -22,7 +22,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">infoelectoral</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,10 +105,41 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">provincias</span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="st">"1982"</span>, mes <span class="op">=</span> <span class="st">"10"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">provincias</span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="st">"1982"</span>, mes <span class="op">=</span> <span class="st">"10"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading https://infoelectoral.interior.gob.es/estaticos/docxl/apliextr/02198210_TOTA.zip</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	1156 obs. of  31 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tipo_eleccion            : chr  "02" "02" "02" "02" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anno                     : chr  "1982" "1982" "1982" "1982" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mes                      : chr  "10" "10" "10" "10" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ vuelta                   : chr  "1" "1" "1" "1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_ccaa              : chr  "02" "02" "02" "02" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_provincia         : chr  "50" "50" "50" "50" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_distrito_electoral: chr  "9" "9" "9" "9" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ ambito_territorial       : chr  "Zaragoza" "Zaragoza" "Zaragoza" "Zaragoza" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ poblacion_derecho        : num  826766 826766 826766 826766 826766 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ n_diputados              : num  8 8 8 8 8 8 8 8 8 8 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ numero_mesas             : num  1066 1066 1066 1066 1066 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_ine                : num  617130 617130 617130 617130 617130 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_escrutinio         : num  617130 617130 617130 617130 617130 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_cere               : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votantes_cere            : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ participacion_1          : num  239323 239323 239323 239323 239323 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ participacion_2          : num  422425 422425 422425 422425 422425 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_blancos            : num  3276 3276 3276 3276 3276 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_nulos              : num  15448 15448 15448 15448 15448 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_candidaturas       : num  494726 494726 494726 494726 494726 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_afirmativos        : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_negativos          : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_nacional  : chr  "000005" "000015" "000019" "000031" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_autonomia : chr  "000006" "000015" "000019" "000031" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_provincia : chr  "000006" "000015" "000019" "000031" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido           : chr  "000006" "000015" "000019" "000031" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ denominacion             : chr  "ALIANZA POP.-P.DEMOC.POPULAR-P.ARAGONES REGIONAL." "CENTRO DEMOCRATICO Y SOCIAL" "CANDIDATURA DE UNIDAD COMUNISTA" "FALANGE ESPAÑOLA DE LAS JONS" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ siglas                   : chr  "AP-PDP-PAR" "CDS" "CUC" "FE-JONS" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos                    : num  156800 19918 665 0 2654 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ diputados                : num  3 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ datos_oficiales          : chr  "N" "N" "N" "N" ...</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -120,7 +151,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
   <p class="preferably">Using <a href="https://preferably.amirmasoudabdol.name/?source=footer" class="external-link">preferably</a> template.</p>
 </div>
 

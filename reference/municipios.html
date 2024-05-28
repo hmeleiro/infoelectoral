@@ -22,7 +22,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">infoelectoral</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -109,10 +109,45 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span>  <span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">municipios</span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="st">"2019"</span>, mes <span class="op">=</span> <span class="st">"11"</span><span class="op">)</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu">municipios</span><span class="op">(</span>tipo_eleccion <span class="op">=</span> <span class="st">"congreso"</span>, anno <span class="op">=</span> <span class="st">"2019"</span>, mes <span class="op">=</span> <span class="st">"11"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Downloading https://infoelectoral.interior.gob.es/estaticos/docxl/apliextr/02201911_MUNI.zip</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	99118 obs. of  34 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ tipo_eleccion            : chr  "02" "02" "02" "02" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ anno                     : chr  "2019" "2019" "2019" "2019" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ mes                      : chr  "11" "11" "11" "11" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ vuelta                   : chr  "1" "1" "1" "1" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_ccaa              : chr  "01" "01" "01" "01" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_provincia         : chr  "04" "04" "04" "04" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_municipio         : chr  "001" "001" "001" "001" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ municipio                : chr  "Abla" "Abla" "Abla" "Abla" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_distrito          : chr  "99" "99" "99" "99" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_distrito_electoral: chr  "0" "0" "0" "0" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_judicial  : chr  "013" "013" "013" "013" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_diputacion        : chr  "013" "013" "013" "013" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_comarca           : chr  "000" "000" "000" "000" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ poblacion_derecho        : num  1235 1235 1235 1235 1235 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ numero_mesas             : num  2 2 2 2 2 2 2 2 2 2 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_ine                : num  1002 1002 1002 1002 1002 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_escrutinio         : num  1002 1002 1002 1002 1002 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ censo_cere               : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votantes_cere            : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ participacion_1          : num  393 393 393 393 393 393 393 393 393 393 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ participacion_2          : num  588 588 588 588 588 588 588 588 588 588 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_blancos            : num  3 3 3 3 3 3 3 3 3 3 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_nulos              : num  7 7 7 7 7 7 7 7 7 7 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos_candidaturas       : num  707 707 707 707 707 707 707 707 707 707 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ numero_concejales        : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_nacional  : chr  "000009" "000018" "000023" "000055" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_autonomia : chr  "000009" "000018" "000023" "000055" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido_provincia : chr  "000009" "000018" "000023" "000055" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ codigo_partido           : chr  "000009" "000018" "000023" "000055" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ denominacion             : chr  "ANDALUCÍA POR SÍ" "CIUDADANOS-PARTIDO DE LA CIUDADANÍA" "ESCAÑOS EN BLANCO" "PARTIDO ANIMALISTA CONTRA EL MALTRATO ANIMAL" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ siglas                   : chr  "AxSÍ" "Cs" "EB" "PACMA" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ votos                    : num  0 47 2 3 0 30 193 310 0 0 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ datos_oficiales          : chr  "S" "S" "S" "S" ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ concejales_obtenidos     : num  0 0 0 0 0 0 0 0 0 0 ...</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -124,7 +159,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.9.</p>
   <p class="preferably">Using <a href="https://preferably.amirmasoudabdol.name/?source=footer" class="external-link">preferably</a> template.</p>
 </div>
 
