@@ -1,7 +1,8 @@
-url: https://hmeleiro.github.io/infoelectoral/
+url: https://rOpenSpain.github.io/infoelectoral/
+
 template:
-  bootstrap: 5
   package: preferably
+
 lang: en
 navbar:
   structure:
@@ -10,7 +11,7 @@ navbar:
   components:
     github:
       icon: fa-github
-      href: https://github.com/hmeleiro/infoelectoral
+      href: https://github.com/rOpenSpain/infoelectoral
       aria-label: Github
     twitter:
       icon: fa-twitter
@@ -18,9 +19,9 @@ navbar:
       aria-label: Twitter
 repo:
   url:
-    home: https://github.com/hmeleiro/infoelectoral/
-    issue: https://github.com/hmeleiro/infoelectoral/issues/
-    user: https://github.com/hmeleiro/
+    home: https://github.com/rOpenSpain/infoelectoral/
+    issue: https://github.com/rOpenSpain/infoelectoral/issues/
+    user: https://github.com/rOpenSpain/
 
 home:
   links:
@@ -47,3 +48,6 @@ reference:
   - codigos_partidos
   - renta
 
+authors:
+  Héctor Meleiro:
+    href: "https://hmeleiro.com/"

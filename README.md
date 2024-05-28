@@ -1,4 +1,6 @@
-# infoelectoral
+::: {#header style="display: flex; gap: 1rem; align-items: center; min-height: 0; margin: 2rem 0; padding: 2rem 0; border-bottom: 1px solid #efefef;"}
+# ![hex-sticker-of-a-ballot-voting-box](man/figures/logo.png){alt="ballot-box" style="vertical-align: middle;" width="15%"}infoelectoral
+:::
 
 <!-- badges: start -->
 
@@ -6,7 +8,7 @@
 
 <!-- badges: end -->
 
-[infoelectoral](https://ropenspain.github.io/infoelectoral/) is a R library that helps retrieve official electoral results for Spain from the [Ministry of the Interior](https://infoelectoral.interior.gob.es/opencms/es/inicio/). It allows you to download the results of general, european and municipal elections of any year at the polling station and municipality level.
+[infoelectoral](https://ropenspain.github.io/infoelectoral/) is a R library that helps retrieve official electoral results for Spain from the [Ministry of the Interior](https://infoelectoral.interior.gob.es/es/inicio/). It allows you to download the results of general, european and municipal elections of any year at the polling station and municipality level.
 
 ## Installation
 
