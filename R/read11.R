@@ -12,7 +12,7 @@
 read11 <- function(file, tempd) {
   ### Leo los ficheros DAT necesarios
   con <- file(file.path(tempd, file), encoding = "ISO-8859-1")
-  df <- data.frame( value = readLines(con) )
+  df <- data.frame(value = readLines(con))
   close(con)
 
   ### Separo los valores según el diseño de registro
@@ -44,8 +44,7 @@ read11 <- function(file, tempd) {
   df$numero_concejales <- as.numeric(substr(lineas, 158, 159))
   df$datos_oficiales <- substr(lineas, 160, 160)
 
-  df <- df[,-1]
+  df <- df[, -1]
 
   return(df)
-
 }

@@ -12,7 +12,7 @@
 read03 <- function(file, tempd) {
   ### Leo los ficheros DAT necesarios
   con <- file(file.path(tempd, file), encoding = "ISO-8859-1")
-  df <- data.frame( value = readLines(con) )
+  df <- data.frame(value = readLines(con))
   close(con)
 
   ### Separo los valores según el diseño de registro
@@ -28,8 +28,7 @@ read03 <- function(file, tempd) {
   df$codigo_partido_autonomia <- substr(lineas, 221, 226)
   df$codigo_partido_nacional <- substr(lineas, 227, 232)
 
-  df <- df[ , -1]
+  df <- df[, -1]
 
   return(df)
-
 }

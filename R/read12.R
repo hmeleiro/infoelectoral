@@ -12,7 +12,7 @@
 read12 <- function(file, tempd) {
   ### Leo los ficheros DAT necesarios
   con <- file(file.path(tempd, file), encoding = "ISO-8859-1")
-  df <- data.frame( value = readLines(con) )
+  df <- data.frame(value = readLines(con))
   close(con)
 
   ### Separo los valores según el diseño de registro
@@ -29,15 +29,16 @@ read12 <- function(file, tempd) {
   df$votos <- as.numeric(substr(lineas, 21, 23))
   df$concejales_obtenidos <- as.numeric(substr(lineas, 24, 25))
 
-  df <- df[ , -1]
+  df <- df[, -1]
   df <- unique(df) # individual candidates
 
   # Check if different candidaturas got different votes
-  if(nrow(df) != nrow(unique(df[,
-    c("codigo_provincia", "codigo_municipio", "codigo_partido")]))){
-      stop("In small municipalities: different candidates from same party got different votes (?)")
+  if (nrow(df) != nrow(unique(df[
+    ,
+    c("codigo_provincia", "codigo_municipio", "codigo_partido")
+  ]))) {
+    stop("In small municipalities: different candidates from same party got different votes (?)")
   }
 
   return(df)
-
 }

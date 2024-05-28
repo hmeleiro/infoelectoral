@@ -12,7 +12,7 @@
 read07 <- function(file, tempd) {
   ### Leo los ficheros DAT necesarios
   con <- file(file.path(tempd, file), encoding = "ISO-8859-1")
-  df <- data.frame( value = readLines(con) )
+  df <- data.frame(value = readLines(con))
   close(con)
 
   ### Separo los valores según el diseño de registro
@@ -42,8 +42,7 @@ read07 <- function(file, tempd) {
   df$votos_negativos <- as.numeric(substr(lineas, 164, 171))
   df$datos_oficiales <- substr(lineas, 172, 172)
 
-  df <- df[,-1]
+  df <- df[, -1]
 
   return(df)
-
 }
