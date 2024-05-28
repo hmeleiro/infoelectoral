@@ -8,7 +8,6 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = T, results = T, include = T, warning = F, message = F)
-
 ```
 
 The goal of [infoelectoral](https://ropenspain.github.io/infoelectoral/) is to facilitate the downloading and necessary processing of official data on electoral results from the Ministry of the Interior of Spain. Files can be downloaded at the polling station and municipality level on the ministry's website. However, the format of the files (plain text without delimitation) and the data structure design (the useful information for the analysis of the elections is dispersed in at least three different files) make importing the data somewhat costly.
@@ -20,7 +19,6 @@ library(infoelectoral)
 library(dplyr)
 df <- municipios(tipo_eleccion = "congreso", anno = "1982", mes = "10")
 glimpse(df)
-# Sys.sleep(4)
 ```
 
 To download election data at the polling station level:
@@ -28,18 +26,16 @@ To download election data at the polling station level:
 ```{r}
 df <- mesas("congreso", "2019", "04")
 glimpse(df)
-# Sys.sleep(4)
 ```
 
-The [infoelectoral](https://ropenspain.github.io/infoelectoral/) library also has the function `candidatos()`, which allows the downloading of data on candidates for the Senate, the Congress of Deputies, the European Parliament and city councils. In the case of Senate candidates, the function requires a value in the argument `nivel` indicating whether the results are wanted at the municipality or polling station level, and the resulting `data.frame` will include a column called `votos` indicating the number of ballots received by each candidate for the Upper House.
+[infoelectoral](https://ropenspain.github.io/infoelectoral/) also has the function `candidatos()`, which allows the downloading of data on candidates for the Senate, Congress of Deputies, European Parliament and city councils. In the case of Senate candidates, the function requires a value in the argument `nivel` indicating whether the voting results are wanted at the municipality or polling station level, and the resulting `data.frame` will include a column called `votos` indicating the number of ballots received by each candidate for the Upper House.
 
 ```{r}
 df <- candidatos(tipo_eleccion = "senado", anno = "2019", mes = "11", nivel = "municipio")
 glimpse(df)
-# Sys.sleep(4)
 ```
 
-In the case of candidates for the Congress of Deputies, European Parliament or city councils, institutions elected through closed lists, it is not necessary to provide a value for the argument `nivel` and the resulting object will not have the column `votos`.
+In the case of candidates data for the Congress of Deputies, European Parliament or city councils, as these are elected through party closed lists, it is not necessary to provide a value for the argument `nivel` and the resulting object will not have the column `votos`. If you want ballot results for this cases, you should use the three main functions `provincias()`, `municipios()` and `mesas()`.
 
 ```{r}
 df <- candidatos("europeas", "2019", "05")

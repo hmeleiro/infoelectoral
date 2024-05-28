@@ -1,7 +1,7 @@
 Package: infoelectoral
 Type: Package
 Title: Download Spanish Election Results
-Version: 1.0.1
+Version: 1.0.2
 Authors@R: 
     person("Héctor", "Meleiro", 
     email = "hmeleiros@gmail.com", 
@@ -15,8 +15,10 @@ Encoding: UTF-8
 LazyData: true
 Imports: dplyr (>= 1.0.0), stringr (>= 1.0.0), httr (>= 1.0.0)
 Suggests: 
+    ggplot2,
     mapSpain,
-    tmap,
+    patchwork,
+    purrr,
     tidyr,
     preferably,
     knitr,

@@ -6,33 +6,29 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-
+ 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = T, results = T, include = T, warning = F, message = F)
-
 ```
+
 
 ## Install and load the packages
 
 Install [infoelectoral](https://ropenspain.github.io/infoelectoral/) and load the packages needed.
 
 ```{r}
-# devtools::install_github("ropenspain/elecciones") # <--- Instala la librería elecciones
-
+# install_packages("infoelectoral")
 library(infoelectoral)
 # Cargo el resto de librerías
 library(dplyr)
 library(tidyr)
-
 ```
 
 ## Download the results
 
 Download some results. In this case we download the election for Congress of December 2015.
 ```{r}
-
 results <- municipios("congreso", "2015", "12") # Descargo los datos
-
 ```
 
 
@@ -41,82 +37,91 @@ Import the geometry shapes for the municipalities using [mapSpain](https://githu
 
 ```{r}
 library(mapSpain)
-shp <- esp_munic.sf %>% select(LAU_CODE)
+shp <- esp_get_munic(year = "2016") %>% select(LAU_CODE)
+shp_ccaa <- mapSpain::esp_get_ccaa()
 ```
 
 
 ## Recode the party names
-Since most parties have different names throughout the country, you need to recode them to group their results. You can use the column `code.nacional` included in the resulting `data.frame` that indicates the grouping party code at the national level. After that you'll have to create the complete municipality code (`LAU_CODE`) for the merge with the `sf` object and transform the data from long to wide format.
+Since most parties have different names throughout the country, you will need to recode them to group their results. You can use the column `codigo_partido_nacional` included in the resulting `data.frame` that indicates the grouping party code at the national level. After that you'll have to create the complete municipality code (`LAU_CODE`) for the merge with the `sf` object and transform the data from long to wide format.
+
+First, let's group the parties by `codigo_partido_nacional` and `siglas` and sum the votes to see which party codes correspond to the main parties.
+```{r}
+results %>%
+  group_by(codigo_partido_nacional) %>%
+  summarise(
+    siglas_r = paste(unique(siglas)[1], collapse = ", "),
+    votos = sum(votos)
+  ) %>%
+  arrange(-votos)
+```
+
+Then, we'll have to recode the party names and calculate the percentage of votes.
 
 ```{r}
-
-siglas_r <- results %>% 
-  group_by(codigo_partido_nacional) %>% 
-  summarise(siglas_r = siglas[1]) %>% 
-  filter(siglas_r %in% c("PP", "PSE-EE (PSO", "PSOE", "PODEMOS-AHA",
-                         "PODEMOS-COM", "PODEMOS-En", "C´s", "EN COMÚ",
-                         "IU-UPeC", "IULV-CA,UPe")) %>% 
-  mutate(siglas_r = case_when(
-    siglas_r %in% c("PODEMOS-COM", "PODEMOS-En", "EN COMÚ", "PODEMOS-AHA") ~ "Podemos",
-    siglas_r == "PSE-EE (PSO" ~ "PSOE",
-    siglas_r == "C´s" ~ "Cs",
-    siglas_r == "IULV-CA,UPe" ~ "IU",
-    TRUE ~ siglas_r
-    
-  ))
-
-results <- merge(results, siglas_r, by = "codigo_partido_nacional")
-
-results <- results %>% 
+results <-
+  results %>%
   mutate(
+    siglas_r = case_when(
+      codigo_partido_nacional == "903316" ~ "PP",
+      codigo_partido_nacional == "903484" ~ "PSOE",
+      codigo_partido_nacional == "901079" ~ "Cs",
+      codigo_partido_nacional %in% c("903736", "905033", "905008", "905041") ~ "Podemos",
+      codigo_partido_nacional == "904850" ~ "IU"
+    ),
     # Construyo la columna que identifica al municipio (LAU_CODE)
     LAU_CODE = paste0(codigo_provincia, codigo_municipio),
     # Calculo el % sobre censo
-    pct = round((votos / censo_ine ) * 100, 2)
-    ) %>% 
+    pct = round((votos / censo_ine) * 100, 2)
+  ) %>%
+  filter(!is.na(siglas_r)) %>%
   # Selecciono las columnas necesarias
-  select(codigo_ccaa, LAU_CODE, siglas_r, censo_ine, votos_candidaturas, pct) %>% 
-  # Transformo los datos de formato long a wide
-  pivot_wider(names_from = "siglas_r", values_from = "pct")
-
+  select(codigo_ccaa, LAU_CODE, siglas_r, censo_ine, votos_candidaturas, pct)
 ```
 
-## Merge the data and the geometries
-With the `LAU_CODE` column merge the data with the geomtries of the municipalities. Since the Canary Island are too far away you are going to need to get them closer to the Iberian Peninsula.
+
+## Join the voting data to the geometries
+With the `LAU_CODE` column merge the data with the geomtries of the municipalities.
 
 ```{r}
-shp <- merge(shp, results, by = "LAU_CODE")
-
-# Acercamos las Canarias a la peninsula
-shp$geometry[shp$codigo_ccaa == "05"] <- shp$geometry[shp$codigo_ccaa == "05"] + c(5, 5)
-
+shp <- left_join(shp, results, by = "LAU_CODE")
 ```
 
 ## Visualize
 
-At last, we may use [tmap](https://github.com/mtennekes/tmap) or even [ggplot](https://ggplot2.tidyverse.org/) to visualize the maps. In this case we  use the formar because of it's easier to create facets.
+At last, we may use [ggplot2](https://ggplot2.tidyverse.org/) to visualize the data. In this case we use `purrr::map` to create a list of plots each of them with their own color gradient scale and `patchwork` to show them together.
 
 ```{r fig.align="center", fig.height = 12, fig.width=8}
-colores5 <- list(c("#ededed", "#0cb2ff"), # PP
-                 c("#ededed", "#E01021"), # PSOE
-                 c("#ededed", "#612d62"), # Podemos
-                 c("#ededed", "#E85B2D"), # Cs
-                 c("#ededed", "#E01021")) # IU
+library(ggplot2)
+library(purrr)
+library(patchwork)
 
-breaks <- c(0,10,30,50,70,100)
+colores <- c("#0cb2ff", "#E01021", "#612d62", "#E85B2D", "#E01021")
+names(colores) <- c("PP", "PSOE", "Podemos", "Cs", "IU")
 
-library(tmap)
-mapa <- tm_shape(shp) + 
-  tm_polygons(col = c("PP", "PSOE", "Podemos", "Cs", "IU"), style = "fixed", 
-              palette = colores5, breaks = breaks,
-              title = "% sobre censo", 
-              border.alpha = 0, lwd = 0, legend.show = T, legend.outside = T) +
-  tm_layout(between.margin = 5, frame = FALSE,
-            title = c("Partido Popular", "PSOE", "Podemos", "Ciudadanos", "Izquierda Unida"),
-            title.fontface = "bold") +
-  tm_legend(legend.text.size = 1, 
-            legend.title.size = 1) +
-  tm_facets(sync = TRUE, ncol = 2)
-mapa
+# Creo una lista de plots
+maps <-
+  map(names(colores), function(p) {
+    shp %>%
+      filter(siglas_r == p) %>%
+      ggplot() +
+      geom_sf(
+        aes(fill = pct, color = pct),
+        linewidth = 0, show.legend = F
+      ) +
+      geom_sf(
+        data = shp_ccaa, fill = NA, color = "black",
+        linewidth = 0.01
+      ) +
+      facet_wrap(~siglas_r) +
+      scale_fill_gradient(
+        low = "white", high = colores[p],
+        na.value = "grey90", aesthetics = c("fill", "color")
+      ) +
+      theme_void()
+  })
+
+
+# Uso patchworks para mostrar los plots
+wrap_plots(maps, ncol = 2)
 ```
-
