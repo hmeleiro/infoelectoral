@@ -8,9 +8,9 @@
 
 [infoelectoral](https://ropenspain.github.io/infoelectoral/) is a R library that helps retrieve official electoral results for Spain from the [Ministry of the Interior](https://infoelectoral.interior.gob.es/opencms/es/inicio/). It allows you to download the results of general, european and municipal elections of any year at the polling station and municipality level.
 
-# Installation
+## Installation
 
-``` R
+``` r
 # To install the latest stable version from CRAN:
 install.packages("infoelectoral")
 
@@ -18,7 +18,7 @@ install.packages("infoelectoral")
 devtools::install_github("ropenspain/infoelectoral")
 ```
 
-# Overview
+## Overview
 
 [infoelectoral](https://ropenspain.github.io/infoelectoral/) has four functions:
 
@@ -29,14 +29,14 @@ devtools::install_github("ropenspain/infoelectoral")
 
 The package also includes some [datasets](https://ropenspain.github.io/infoelectoral/reference/index.html#datasets) with the official names of the territorial units and the election dates.
 
-# Basic usage
+## Basic usage
 
-``` R
+``` r
 library(infoelectoral)
 df <- municipios(tipo_eleccion = "congreso", anno = 1982, mes = "10")
 ```
 
-# Learn more
+## Learn more
 
 For a a extended example of how all functions work please check the vignettes:
 

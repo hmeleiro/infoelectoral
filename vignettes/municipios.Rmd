@@ -42,7 +42,7 @@ shp_ccaa <- mapSpain::esp_get_ccaa()
 ```
 
 
-## Recode the party names
+## Recode party names
 Since most parties have different names throughout the country, you will need to recode them to group their results. You can use the column `codigo_partido_nacional` included in the resulting `data.frame` that indicates the grouping party code at the national level. After that you'll have to create the complete municipality code (`LAU_CODE`) for the merge with the `sf` object and transform the data from long to wide format.
 
 First, let's group the parties by `codigo_partido_nacional` and `siglas` and sum the votes to see which party codes correspond to the main parties.
@@ -80,8 +80,8 @@ results <-
 ```
 
 
-## Join the voting data to the geometries
-With the `LAU_CODE` column merge the data with the geomtries of the municipalities.
+## Join data and sf object
+With the `LAU_CODE` column merge the data with the geometries of the municipalities.
 
 ```{r}
 shp <- left_join(shp, results, by = "LAU_CODE")
@@ -111,7 +111,7 @@ maps <-
       ) +
       geom_sf(
         data = shp_ccaa, fill = NA, color = "black",
-        linewidth = 0.01
+        linewidth = 0.1
       ) +
       facet_wrap(~siglas_r) +
       scale_fill_gradient(
