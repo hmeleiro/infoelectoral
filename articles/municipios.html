@@ -137,7 +137,7 @@ Congress of December 2015.</p>
 <span><span class="va">shp_ccaa</span> <span class="op">&lt;-</span> <span class="fu">mapSpain</span><span class="fu">::</span><span class="fu"><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_ccaa.html" class="external-link">esp_get_ccaa</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="recode-the-party-names">Recode the party names<a class="anchor" aria-label="anchor" href="#recode-the-party-names"></a>
+<h2 id="recode-party-names">Recode party names<a class="anchor" aria-label="anchor" href="#recode-party-names"></a>
 </h2>
 <p>Since most parties have different names throughout the country, you
 will need to recode them to group their results. You can use the column
@@ -195,10 +195,10 @@ percentage of votes.</p>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">codigo_ccaa</span>, <span class="va">LAU_CODE</span>, <span class="va">siglas_r</span>, <span class="va">censo_ine</span>, <span class="va">votos_candidaturas</span>, <span class="va">pct</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="join-the-voting-data-to-the-geometries">Join the voting data to the geometries<a class="anchor" aria-label="anchor" href="#join-the-voting-data-to-the-geometries"></a>
+<h2 id="join-data-and-sf-object">Join data and sf object<a class="anchor" aria-label="anchor" href="#join-data-and-sf-object"></a>
 </h2>
 <p>With the <code>LAU_CODE</code> column merge the data with the
-geomtries of the municipalities.</p>
+geometries of the municipalities.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">shp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">shp</span>, <span class="va">results</span>, by <span class="op">=</span> <span class="st">"LAU_CODE"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -229,7 +229,7 @@ each of them with their own color gradient scale and
 <span>      <span class="op">)</span> <span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">geom_sf</a></span><span class="op">(</span></span>
 <span>        data <span class="op">=</span> <span class="va">shp_ccaa</span>, fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"black"</span>,</span>
-<span>        linewidth <span class="op">=</span> <span class="fl">0.01</span></span>
+<span>        linewidth <span class="op">=</span> <span class="fl">0.1</span></span>
 <span>      <span class="op">)</span> <span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html" class="external-link">facet_wrap</a></span><span class="op">(</span><span class="op">~</span><span class="va">siglas_r</span><span class="op">)</span> <span class="op">+</span></span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html" class="external-link">scale_fill_gradient</a></span><span class="op">(</span></span>
