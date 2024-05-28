@@ -7,7 +7,6 @@
 #'
 #' @return data.frame with the data for the Senate candidates.
 #'
-#' @importFrom utils download.file
 #' @importFrom utils unzip
 #' @importFrom stringr str_trim
 #' @importFrom stringr str_remove_all
@@ -20,20 +19,20 @@
 #'
 #' @keywords internal
 senado_municipios <- function(anno, mes) {
-
   ### Construyo la url al zip de la elecciones
   tipo <- "03"
-  urlbase <- "https://infoelectoral.interior.gob.es/estaticos/docxl/apliextr/"
-  url <- paste0(urlbase, tipo, anno, mes, "_MUNI", ".zip")
+  url <- generate_url(tipo, anno, mes, "MUNI")
 
   ### Descargo el fichero zip en un directorio temporal y lo descomprimo
-  tempd <- tempdir(check = FALSE)
-  temp <- tempfile(tmpdir = tempd, fileext = ".zip")
-  download.file(url, temp, mode = "wb")
+  tempd <- tempdir(check = TRUE)
+  filename <- gsub(".+/", "", url)
+  temp <- file.path(tempd, filename, fsep = "\\")
+  tempd <- paste0(tempd, "\\", gsub(".zip", "", filename))
+  download_bin(url, temp)
   unzip(temp, overwrite = TRUE, exdir = tempd)
 
   ### Construyo las rutas a los ficheros DAT necesarios
-  codigo_eleccion <- paste0(substr(anno, nchar(anno)-1, nchar(anno)), mes)
+  codigo_eleccion <- paste0(substr(anno, nchar(anno) - 1, nchar(anno)), mes)
   todos <- list.files(tempd, recursive = TRUE)
   x <- todos[todos == paste0("04", tipo, codigo_eleccion, ".DAT")]
   xmunicipios <- todos[todos == paste0("06", tipo, codigo_eleccion, ".DAT")]
@@ -45,26 +44,36 @@ senado_municipios <- function(anno, mes) {
   dfcandidatos <- read04(x, tempd)
   dfcandidatos$codigo_distrito_electoral[dfcandidatos$codigo_distrito_electoral == "9"] <- "0"
   dfbasicos <- read05(xbasicos, tempd)
-  dfbasicos <- dfbasicos[dfbasicos$codigo_distrito == "99",]
+  dfbasicos <- dfbasicos[dfbasicos$codigo_distrito == "99", ]
   dfmunicipios <- read06(xmunicipios, tempd)
   colnames(dfmunicipios)[colnames(dfmunicipios) == "codigo_partido"] <- "codigo_senador"
 
-
-  ### Limpio el directorio temporal (IMPORTANTE: Si no lo hace, puede haber problemas al descargar más de una elección)
-  borrar <-  list.files(tempd, full.names = TRUE, recursive = TRUE)
-  try(file.remove(borrar), silent = TRUE)
-
   ### Junto los datos de los tres ficheros
-  df <- full_join(dfbasicos, dfmunicipios, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_municipio", "codigo_distrito"))
-  df <- full_join(df, dfcandidatos, by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia", "codigo_distrito_electoral", "codigo_senador"))
-  df <- full_join(df, dfcandidaturas, by = c("tipo_eleccion", "anno", "mes", "codigo_partido"))
+  df <- full_join(dfbasicos, dfmunicipios,
+    by = c(
+      "tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia",
+      "codigo_municipio", "codigo_distrito"
+    )
+  )
+  df <- full_join(df, dfcandidatos,
+    by = c(
+      "tipo_eleccion", "anno", "mes", "vuelta", "codigo_provincia",
+      "codigo_distrito_electoral", "codigo_senador"
+    ),
+    relationship = "many-to-many",
+  )
+  df <- full_join(df, dfcandidaturas,
+    by = c("tipo_eleccion", "anno", "mes", "codigo_partido")
+  )
 
   ### Limpieza: Quito los espacios en blanco a los lados de estas variables
   df$siglas <- str_trim(df$siglas)
   df$denominacion <- str_trim(df$denominacion)
 
   codigos_municipios <- infoelectoral::codigos_municipios
-  df <- full_join(df, codigos_municipios, by = c("codigo_provincia", "codigo_municipio")) %>%
+  df <- full_join(df, codigos_municipios,
+    by = c("codigo_provincia", "codigo_municipio")
+  ) %>%
     mutate_if(is.character, str_trim) %>%
     mutate(denominacion = str_remove_all("denominacion", '"')) %>%
     select(
@@ -103,14 +112,16 @@ senado_municipios <- function(anno, mes) {
       "apellido_2",
       "sexo",
       "nacimiento",
-      "dni" ,
+      "dni",
       "votos",
       "electo",
       "datos_oficiales"
-    )%>%
-    arrange("codigo_provincia",
-            "siglas",
-            "orden_candidato")
+    ) %>%
+    arrange(
+      "codigo_provincia",
+      "siglas",
+      "orden_candidato"
+    )
 
   df$nacimiento[df$nacimiento_anno == "0000"] <- NA
 

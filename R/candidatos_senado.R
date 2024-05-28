@@ -11,9 +11,9 @@
 #' @keywords internal
 #'
 candidatos_senado <- function(anno, mes, nivel) {
-  if(nivel == "mesa") {
+  if (nivel == "mesa") {
     df <- senado_mesas(anno, mes)
-  } else if(nivel == "municipio") {
+  } else if (nivel == "municipio") {
     df <- senado_municipios(anno, mes)
   } else {
     stop('The argumento nivel must take one of the following values: "mesa", "municipio".')

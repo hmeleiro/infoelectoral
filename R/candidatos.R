@@ -22,7 +22,6 @@
 #' @export
 #'
 candidatos <- function(tipo_eleccion, anno, mes, nivel) {
-
   ### Construyo la url al zip de la elecciones
   if (tipo_eleccion == "municipales") {
     tipo <- "04"

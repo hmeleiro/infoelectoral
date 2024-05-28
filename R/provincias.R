@@ -21,30 +21,20 @@
 #' @export
 provincias <- function(tipo_eleccion, anno, mes) {
   ### Construyo la url al zip de la elecciones
-  if (tipo_eleccion == "municipales") {
-    tipo <- "04"
-  } else if (tipo_eleccion == "congreso") {
-    tipo <- "02"
-  } else if (tipo_eleccion == "europeas") {
-    tipo <- "07"
-  } else if (tipo_eleccion == "cabildos") {
-    tipo <- "06"
-  } else {
-    stop('The argument tipo_eleccion must take one of the following values: "congreso", "municipales", "europeas"')
-  }
-
-  urlbase <- "https://infoelectoral.interior.gob.es/estaticos/docxl/apliextr/"
-  url <- paste0(urlbase, tipo, anno, mes, "_TOTA", ".zip")
+  tipo <- election_type_code(tipo_eleccion)
+  url <- generate_url(tipo, anno, mes, "TOTA")
 
   ### Descargo el fichero zip en un directorio temporal y lo descomprimo
-  tempd <- tempdir()
-  temp <- tempfile(tmpdir = tempd, fileext = ".zip")
-  download.file(url, temp, mode = "wb")
+  tempd <- tempdir(check = TRUE)
+  filename <- gsub(".+/", "", url)
+  temp <- file.path(tempd, filename, fsep = "\\")
+  tempd <- paste0(tempd, "\\", gsub(".zip", "", filename))
+  download_bin(url, temp)
   unzip(temp, overwrite = TRUE, exdir = tempd)
 
 
   ### Construyo las rutas a los ficheros DAT necesarios
-  codigo_eleccion <- paste0(substr(anno, nchar(anno)-1, nchar(anno)), mes)
+  codigo_eleccion <- paste0(substr(anno, nchar(anno) - 1, nchar(anno)), mes)
   todos <- list.files(tempd, recursive = TRUE)
   x <- todos[todos == paste0("03", tipo, codigo_eleccion, ".DAT")]
   xbasicos <- todos[todos == paste0("07", tipo, codigo_eleccion, ".DAT")]
@@ -56,17 +46,16 @@ provincias <- function(tipo_eleccion, anno, mes) {
   dfbasicos <- read07(xbasicos, tempd)
   dfcandidaturas <- read08(xcandidaturas, tempd)
 
-
-  ### Limpio el directorio temporal (IMPORTANTE: Si no lo hace, puede haber problemas al descargar más de una elección)
-  borrar <-  list.files(tempd, full.names = TRUE, recursive = TRUE)
-  try(file.remove(borrar), silent = TRUE)
-
   ### Junto los datos de los tres ficheros
   df <- full_join(dfcandidaturas_basicos, dfcandidaturas,
-              by = c("tipo_eleccion", "anno", "mes", "codigo_partido"))
+    by = c("tipo_eleccion", "anno", "mes", "codigo_partido")
+  )
   df <- left_join(dfbasicos, df,
-              by = c("tipo_eleccion", "anno", "mes", "vuelta", "codigo_ccaa",
-                     "codigo_provincia", "codigo_distrito_electoral"))
+    by = c(
+      "tipo_eleccion", "anno", "mes", "vuelta", "codigo_ccaa",
+      "codigo_provincia", "codigo_distrito_electoral"
+    )
+  )
 
 
 
@@ -83,7 +72,8 @@ provincias <- function(tipo_eleccion, anno, mes) {
       "codigo_ccaa",
       "codigo_provincia",
       "codigo_distrito_electoral",
-      .after = "vuelta") %>%
+      .after = "vuelta"
+    ) %>%
     relocate(
       "codigo_partido_autonomia",
       "codigo_partido_provincia",

@@ -9,7 +9,7 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = T, results = T, include = T, warning = F, message = F)
-options(HTTPUserAgent="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+
 ```
 
 ## Install and load the packages
@@ -28,7 +28,7 @@ library(tidyr)
 
 ## Download the results
 
-Download some results. In this case we download the election for Congress of december 2015.
+Download some results. In this case we download the election for Congress of December 2015.
 ```{r}
 
 results <- municipios("congreso", "2015", "12") # Descargo los datos
