@@ -1,4 +1,6 @@
-# ![logo](man/figures/logo.png){width="50"}infoelectoral {#sec-infoelectoral}
+::: {#header style="display: flex; align-items: center; min-height: 0; margin: 1rem 0; padding: 0rem 0; border-bottom: 1px solid #efefef;"}
+# ![hex-sticker-of-a-ballot-voting-box](man/figures/logo.png){alt="ballot-box" style="vertical-align: middle;" width="15%"}infoelectoral
+:::
 
 <!-- badges: start -->
 
