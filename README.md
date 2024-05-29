@@ -1,4 +1,4 @@
-# ![logo](man/figures/logo.png){width="50"}infoelectoral {#sec-infoelectoral}
+# infoelectoral
 
 <!-- badges: start -->
 
