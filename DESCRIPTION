@@ -17,11 +17,11 @@ LazyData: true
 Imports: dplyr (>= 1.0.0), stringr (>= 1.0.0), httr (>= 1.0.0)
 Suggests: 
     ggplot2,
-    mapSpain,
+    mapSpain (>= 0.9.0),
     patchwork,
     purrr,
     tidyr,
-    preferably,
+    preferably (>= 0.4.1),
     knitr,
     testthat (>= 3.0.0)
 RoxygenNote: 7.2.3
