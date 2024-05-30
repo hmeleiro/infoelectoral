@@ -111,7 +111,7 @@ municipios <- function(tipo_eleccion, anno, mes, distritos = FALSE) {
     df <- unique(df[df$codigo_distrito == 99, ])
   }
 
-  cleanup(temp, tempd)
+  cleanup(tempd)
 
   return(df)
 }

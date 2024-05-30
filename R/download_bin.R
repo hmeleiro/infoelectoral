@@ -16,13 +16,14 @@ download_bin <- function(url, tempfile) {
     "Gecko/20100101 Firefox/98.0"
   )
 
-  if(file.exists(tempfile)) {
-    message("File already exists, skipping download")
+  if (file.exists(tempfile)) {
+    message(
+      "File already exists, skipping download. Reading existing file ",
+      gsub("..+/", "", tempfile)
+    )
   } else {
     message("Downloading ", url)
     res <- GET(url, add_headers(`User-Agent` = UA, Connection = "keep-alive"))
     writeBin(res$content, tempfile)
   }
-
-
 }

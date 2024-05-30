@@ -96,7 +96,7 @@ provincias <- function(tipo_eleccion, anno, mes) {
       desc("votos")
     )
 
-  cleanup(temp, tempd)
+  cleanup(tempd)
 
   return(df)
 }

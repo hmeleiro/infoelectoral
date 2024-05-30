@@ -128,7 +128,7 @@ senado_mesas <- function(anno, mes) {
 
   df$nacimiento[df$nacimiento_anno == "0000"] <- NA
 
-  cleanup(temp, tempd)
+  cleanup(tempd)
 
   return(df)
 }

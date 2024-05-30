@@ -4,11 +4,9 @@
 \alias{cleanup}
 \title{Cleans up the files and directories created during the process}
 \usage{
-cleanup(files, dirs)
+cleanup(dirs)
 }
 \arguments{
-\item{files}{The files to remove.}
-
 \item{dirs}{The directories to remove.}
 }
 \description{

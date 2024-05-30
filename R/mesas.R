@@ -99,7 +99,7 @@ mesas <- function(tipo_eleccion, anno, mes) {
 
   df$municipio[df$codigo_municipio == "999"] <- "CERA"
 
-  cleanup(temp, tempd)
+  cleanup(tempd)
 
   return(df)
 }

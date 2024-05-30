@@ -94,7 +94,7 @@ candidatos_nosenado <- function(tipo, anno, mes) {
   df$nacimiento <- NA
   df$dni <- NA
 
-  cleanup(temp, tempd)
+  cleanup(tempd)
 
   return(df)
 }
