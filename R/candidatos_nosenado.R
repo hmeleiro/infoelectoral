@@ -24,7 +24,9 @@ candidatos_nosenado <- function(tipo, anno, mes) {
   url <- paste0(urlbase, tipo, anno, mes, "_MUNI", ".zip")
   ### Descargo el fichero zip en un directorio temporal y lo descomprimo
   tempd <- tempdir(check = TRUE)
-  temp <- tempfile(tmpdir = tempd, fileext = ".zip")
+  filename <- gsub(".+/", "", url)
+  temp <- file.path(tempd, filename)
+  tempd <- file.path(tempd, gsub(".zip", "", filename))
   download_bin(url, temp)
   unzip(temp, overwrite = TRUE, exdir = tempd)
 

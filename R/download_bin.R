@@ -15,7 +15,14 @@ download_bin <- function(url, tempfile) {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0)",
     "Gecko/20100101 Firefox/98.0"
   )
-  message("Downloading ", url)
-  res <- GET(url, add_headers(`User-Agent` = UA, Connection = "keep-alive"))
-  writeBin(res$content, tempfile)
+
+  if(file.exists(tempfile)) {
+    message("File already exists, skipping download")
+  } else {
+    message("Downloading ", url)
+    res <- GET(url, add_headers(`User-Agent` = UA, Connection = "keep-alive"))
+    writeBin(res$content, tempfile)
+  }
+
+
 }

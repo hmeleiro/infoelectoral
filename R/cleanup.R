@@ -8,6 +8,6 @@
 #' @keywords internal
 #'
 cleanup <- function(files, dirs) {
-  file.remove(files)
+  # file.remove(files)
   unlink(dirs, recursive=TRUE)
 }

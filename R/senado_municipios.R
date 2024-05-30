@@ -26,8 +26,8 @@ senado_municipios <- function(anno, mes) {
   ### Descargo el fichero zip en un directorio temporal y lo descomprimo
   tempd <- tempdir(check = TRUE)
   filename <- gsub(".+/", "", url)
-  temp <- file.path(tempd, filename, fsep = "\\")
-  tempd <- paste0(tempd, "\\", gsub(".zip", "", filename))
+  temp <- file.path(tempd, filename)
+  tempd <- file.path(tempd, gsub(".zip", "", filename))
   download_bin(url, temp)
   unzip(temp, overwrite = TRUE, exdir = tempd)
 
